@@ -1,0 +1,35 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure("2") do |config|
+  config.vm.box = "debian/bookworm64"
+  config.vm.box_version = "12.20240905.1"
+
+  config.vm.define "gbudauS" do |server|
+    server.vm.hostname = "gbudauS"
+    server.vm.network "private_network", ip: "192.168.56.110"
+    server.vm.provider "virtualbox" do |vb|
+      vb.memory = "2048"
+      vb.cpus = 2
+    end
+    server.vm.provision "shell", inline: <<-SHELL
+      sudo apt-get update -y
+      sudo apt-get install -y curl
+
+      curl -sfL https://get.k3s.io | sh -s - --node-ip=192.168.56.110
+
+      # Wait until the K3s node is fully ready
+      while [[ $(kubectl get nodes -o jsonpath='{.items[*].status.conditions[?(@.type=="Ready")].status}') != "True" ]]; do
+        echo "Waiting for K3s to fully start..."
+        sleep 5
+      done
+
+      curl -fsSL https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash -
+
+      export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
+      helm install app1 /vagrant/app --values /vagrant/app/app1.yaml
+      helm install app2 /vagrant/app --values /vagrant/app/app2.yaml
+      helm install app3 /vagrant/app --values /vagrant/app/app3.yaml
+    SHELL
+  end
+end
