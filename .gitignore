@@ -143,4 +143,5 @@ tags
 
 en.subject.pdf
 p1/shared
+p3/scripts/kubectl
 Vagrantfile
