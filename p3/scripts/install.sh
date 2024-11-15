@@ -2,8 +2,8 @@
 
 # Install Docker
 curl -fsSL https://get.docker.com | sh -
-sudo groupadd docker
 sudo usermod -aG docker $USER
+newgrp docker
 
 # Install kubectl
 curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
