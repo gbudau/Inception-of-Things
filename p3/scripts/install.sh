@@ -1,17 +1,5 @@
 #!/bin/env bash
 
-# Install Docker
-curl -fsSL https://get.docker.com | sh -
-sudo usermod -aG docker $USER
-newgrp docker
-
-# Install kubectl
-curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
-
-# Install k3d
-curl -s https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | bash
-
 # Install ArgoCD
 k3d cluster create develop
 kubectl create namespace argocd
@@ -19,3 +7,7 @@ kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/st
 kubectl apply -f ../confs/application.yaml
 # kubectl port-forward svc/argocd-server -n argocd 8080:443 &
 # echo 'ArgoCD password:' $(kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d)
+# curl -sSL -o argocd-linux-amd64 https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64
+# sudo install -m 555 argocd-linux-amd64 /usr/local/bin/argocd
+# rm argocd-linux-amd64
+# argocd login $(kubectl get service argocd-server -n argocd --output=jsonpath='{.status.loadBalancer.ingress[0].hostname}') --username admin --password $(kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d; echo) --insecure
