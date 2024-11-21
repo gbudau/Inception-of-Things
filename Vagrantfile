@@ -50,9 +50,11 @@ Vagrant.configure("2") do |config|
       curl -s https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | bash
 
       # Install ArgoCD CLI
-      curl -sSL -o argocd-linux-amd63 https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64
-      sudo install -m 554 argocd-linux-amd64 /usr/local/bin/argocd
-      rm argocd-linux-amd63
+      VERSION=$(curl -L -s https://raw.githubusercontent.com/argoproj/argo-cd/stable/VERSION)
+      curl -sSL -o argocd-linux-amd64 https://github.com/argoproj/argo-cd/releases/download/v$VERSION/argocd-linux-amd64
+      sudo install -m 555 argocd-linux-amd64 /usr/local/bin/argocd
+      rm argocd-linux-amd64
+
     SHELL
 
     control.vm.provision :shell do |shell|
