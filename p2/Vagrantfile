@@ -24,12 +24,10 @@ Vagrant.configure("2") do |config|
         sleep 5
       done
 
-      curl -fsSL https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash -
-
       export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
-      kubectl apply -f ../confs/app1/app1.yaml
-      kubectl apply -f ../confs/app2/app2.yaml
-      kubectl apply -f ../confs/app3/app3.yaml
+      kubectl apply -f /vagrant/confs/app1/app1.yaml
+      kubectl apply -f /vagrant/confs/app2/app2.yaml
+      kubectl apply -f /vagrant/confs/app3/app3.yaml
     SHELL
   end
 end
