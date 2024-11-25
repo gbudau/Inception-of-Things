@@ -24,6 +24,14 @@ sudo apt-get update
 # Install Docker Engine
 sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 
+# Add docker to sudoers
+sudo groupadd docker
+sudo usermod -aG docker $USER
+newgrp docker
+
+# Install kubectl
+curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
 
 # kubectl port-forward svc/argocd-server -n argocd 8080:443 &
 # echo 'ArgoCD password:' $(kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d)
