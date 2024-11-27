@@ -1,6 +1,6 @@
 Vagrant.configure("2") do |config|
-  config.vm.box = "ubuntu/jammy64"
-  config.vm.box_version = "20241002.0.0"
+  config.vm.box = "debian/bookworm64"
+  config.vm.box_version = "12.20240905.1"
 
   config.vm.define "gbudauVM" do |control|
     control.vm.hostname = "gbudauVM"
@@ -10,17 +10,11 @@ Vagrant.configure("2") do |config|
       vb.customize ["modifyvm", :id, "--vram", "256"]
       vb.memory = "3072"
       vb.cpus = 3
-      vb.customize ["storageattach", :id, 
-                    "--storagectl", "IDE", 
-                    "--port", "0", "--device", "1", 
-                    "--type", "dvddrive", 
-                    "--medium", "emptydrive"]  
     end
 
     control.vm.provision "shell", inline: <<-SHELL
-      sudo add-apt-repository multiverse
       sudo apt-get update -y
-      sudo apt-get install -y wget curl gnupg2 xfce4 virtualbox-guest-dkms virtualbox-guest-utils virtualbox-guest-x11
+      sudo apt-get install -y wget curl gnupg2 xfce4 accountsservice
 
       sudo sed -i 's/allowed_users=.*$/allowed_users=anybody/' /etc/X11/Xwrapper.config
 
@@ -29,6 +23,8 @@ Vagrant.configure("2") do |config|
       sudo apt-get update -y
       sudo apt-get install -y vagrant
       sudo usermod -a -G tty vagrant
+      # Set password for vagrant user to be able to login using GUI
+      echo -e 'vagrant\nvagrant\n' | sudo passwd vagrant
 
       echo deb [arch=amd64 signed-by=/usr/share/keyrings/oracle-virtualbox-2016.gpg] https://download.virtualbox.org/virtualbox/debian $(lsb_release -cs) contrib | sudo tee /etc/apt/sources.list.d/virtualbox.list
       wget -O- https://www.virtualbox.org/download/oracle_vbox_2016.asc | sudo gpg --yes --output /usr/share/keyrings/oracle-virtualbox-2016.gpg --dearmor
@@ -65,8 +61,7 @@ Vagrant.configure("2") do |config|
 
     control.vm.provision "shell", inline: <<-SHELL
       sudo apt-get update -y
-      sudo apt-get install -y xinit
-      sudo snap install firefox
+      sudo apt-get install -y firefox-esr
     SHELL
   end
 end
