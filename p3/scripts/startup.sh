@@ -5,19 +5,16 @@ k3d cluster create develop -p 8080:80@loadbalancer -p 8888:8888@loadbalancer
 kubectl apply -f ../conf/ArgoNspace.yaml
 kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
 kubectl apply -f ../conf/ArgoConf.yaml
+kubectl apply -f ../conf/ArgoIngress.yaml
 
 # Define dev namespace
 kubectl apply -f ../conf/DevNspace.yaml
 
 
 # Wait for ArgoCD to be ready and show password
-TIMEOUT=360  # Timeout in seconds
-INTERVAL=5  # Check every 5 seconds
+INTERVAL=10  # Check every 5 seconds
 
-echo "Waiting for pod 'argocd-server' in namespace 'argocd' to be in 'Running' state..."
-
-# Initialize timer
-START_TIME=$(date +%s)
+echo "Waiting for the ArgoCD Admin secret to be created... (approx. 3 minute)"
 
 while true; do
   # Get the pod status
@@ -30,6 +27,11 @@ while true; do
     kubectl get secret argocd-initial-admin-secret -n argocd -o jsonpath="{.data.password}" | base64 -d
     echo ""
     exit 0
+  fi
+
+  if [[ "$STATUS" != "Pending" ]]; then
+    echo "Something bad happened. Exiting..."
+    exit 1
   fi
 
   echo $STATUS
