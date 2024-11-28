@@ -1,18 +1,27 @@
 #/bin/sh
 
 # Run ArgoCD
-k3d cluster create develop -p 8080:443@loadbalancer -p 8888:8888@loadbalancer
+k3d cluster create develop -p 8080:80@loadbalancer -p 8888:8888@loadbalancer
+
+# Define dev & argocd namespace
 kubectl apply -f ../conf/ArgoNspace.yaml
-kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+kubectl apply -f ../conf/DevNspace.yaml
+sleep 3
+
+# Install ArgoCD
+kubectl apply -f ../conf/ArgoDeploy.yaml
+kubectl wait -n argocd --for=condition=Ready pods --all
+
+# Deploy App
 kubectl apply -f ../conf/ArgoConf.yaml
+
+# Create Ingress
 kubectl apply -f ../conf/ArgoIngress.yaml
 
-# Define dev namespace
-kubectl apply -f ../conf/DevNspace.yaml
 
 
 # Wait for ArgoCD to be ready and show password
-INTERVAL=10  # Check every 5 seconds
+INTERVAL=10
 
 echo "Waiting for the ArgoCD Admin secret to be created... (approx. 3 minute)"
 
