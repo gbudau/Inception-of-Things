@@ -1,9 +1,9 @@
 #/bin/sh
 
 # Run ArgoCD
-k3d cluster create develop -p 8080:443@loadbalancer -p 8888:8888@loadbalancer
+k3d cluster create develop -p 8080:80@loadbalancer -p 8888:80@loadbalancer
 kubectl apply -f ../conf/ArgoNspace.yaml
-kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+kubectl apply -k ../conf
 kubectl apply -f ../conf/ArgoConf.yaml
 kubectl apply -f ../conf/ArgoIngress.yaml
 
