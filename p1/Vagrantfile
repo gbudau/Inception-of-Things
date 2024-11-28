@@ -2,8 +2,8 @@
 # vi: set ft=ruby :
 
 Vagrant.configure("2") do |config|
-  config.vm.box = "ubuntu/jammy64"
-  config.vm.box_version = "20241002.0.0"
+  config.vm.box = "debian/bookworm64"
+  config.vm.box_version = "12.20240905.1"
 
   config.vm.define "gbudauS" do |control|
     control.vm.hostname = "gbudauS"
@@ -15,10 +15,9 @@ Vagrant.configure("2") do |config|
     control.vm.provision "shell", inline: <<-SHELL
       sudo apt-get update -y
       sudo apt-get install -y curl
-
-      curl -sfL https://get.k3s.io | sh -s - --node-ip=192.168.56.110 --write-kubeconfig-mode "0644"
-      mkdir -p /vagrant/shared
-      cp /var/lib/rancher/k3s/control/node-token /vagrant/shared/k3s_token
+ 
+      K3S_TOKEN=$(cat /vagrant/confs/.k3s_token)
+      curl -sfL https://get.k3s.io | K3S_TOKEN=${K3S_TOKEN} sh -s - --node-ip=192.168.56.110 --write-kubeconfig-mode "0644"
     SHELL
   end
 
@@ -33,11 +32,7 @@ Vagrant.configure("2") do |config|
       sudo apt-get update -y
       sudo apt-get install -y curl
 
-      while [ ! -f /vagrant/shared/k3s_token ];
-        do sleep 1;
-      done
-
-      K3S_TOKEN=$(cat /vagrant/shared/k3s_token)
+      K3S_TOKEN=$(cat /vagrant/confs/.k3s_token)
       curl -sfL https://get.k3s.io | K3S_URL=https://192.168.56.110:6443 K3S_TOKEN=${K3S_TOKEN} sh -s - --node-ip=192.168.56.111
     SHELL
   end
