@@ -3,9 +3,11 @@ kind: Ingress
 metadata:
   name: argocd-ingress
   namespace: argocd
-  ingress.kubernetes.io/ssl-redirect: "false"
+  annotations:
+    ingress.kubernetes.io/ssl-redirect: "false" # Correct annotation placement
 spec:
   rules:
+  - host: localhost # Optional, required if you use a hostname
     http:
       paths:
       - path: /
