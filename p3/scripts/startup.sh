@@ -1,7 +1,7 @@
 #/bin/sh
 
 # Run ArgoCD
-k3d cluster create develop -p 8080:80@loadbalancer -p 8888:8888@loadbalancer
+k3d cluster create develop -p 8080:80@loadbalancer #-p 8888:8888@loadbalancer
 
 # Define dev & argocd namespace
 kubectl apply -f ../conf/ArgoNspace.yaml
@@ -10,11 +10,11 @@ sleep 3
 
 # Install ArgoCD
 # kubectl apply -f ../conf/ArgoDeploy.yaml
+kubectl apply -k ../conf
 kubectl wait -n argocd --for=condition=Ready pods --all
 
 # Deploy App
 # k3d cluster create develop -p 8080:80@loadbalancer -p 8888:80@loadbalancer
-kubectl apply -k ../conf
 # kubectl apply -f ../conf/ArgoConf.yaml
 
 # Create Ingress
