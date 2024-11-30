@@ -7,6 +7,10 @@ sudo apt install wget
 # Install K3d
 wget -q -O - https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | bash
 
+# Install kubectl
+curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+
 # Install Docker in Debian
 # Add Docker's official GPG key:
 sudo apt-get update
@@ -39,12 +43,7 @@ sudo apt-get update
 sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 
 # Add docker to sudoers
-if ! getent group docker >/dev/null 2>&1; then
-    sudo groupadd docker
-fi
+sudo groupadd docker
 sudo usermod -aG docker $USER
 newgrp docker
 
-# Install kubectl
-curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
