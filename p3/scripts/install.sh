@@ -39,7 +39,9 @@ sudo apt-get update
 sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 
 # Add docker to sudoers
-sudo groupadd docker || true
+if ! getent group docker >/dev/null 2>&1; then
+    sudo groupadd docker
+fi
 sudo usermod -aG docker $USER
 newgrp docker
 
