@@ -4,11 +4,12 @@
 k3d cluster create develop -p 8080:80@loadbalancer -p 8888:80@loadbalancer
 
 # Deploys Namespaces
-kubectl apply -k ../conf/Namespaces
+kubectl apply -f ../conf/Namespaces
 sleep 3
 
 # Deploys ArgoCD app & conf
 kubectl apply -k ../conf/ArgoCD
+kubectl apply -f ../conf/ArgoCD
 
 
 # Wait for ArgoCD to be ready and show password
