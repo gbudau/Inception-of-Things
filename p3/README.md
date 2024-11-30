@@ -1,3 +1,12 @@
+# Instrucciones
+
+Hay 3 scripts:
+- install.sh -> Instala todas las dependencias necesarias para correr K3d (necesario correrlo en equipos nuevos)
+- startup.sh -> Inicia el cluster y despliega ArgoCD
+- stop.sh -> Destruye el cluster
+
+## Apuntes
+
 Differencia entre K3s y K3d:
 - k3s: kubernetes ligero
 - k3d: kubernetes dockerizado para simular despliegues de nodos
