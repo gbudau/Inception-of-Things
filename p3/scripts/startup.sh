@@ -9,8 +9,8 @@ sleep 3
 
 # Deploys ArgoCD app & conf
 kubectl apply -k ../conf/ArgoCD
-kubectl apply -f ../conf/ArgoConf.yaml
-kubectl apply -f ../conf/ArgoIngress.yaml
+kubectl apply -f ../conf/ArgoCD/ArgoConf.yaml
+kubectl apply -f ../conf/ArgoCD/ArgoIngress.yaml
 
 
 # Wait for ArgoCD to be ready and show password
